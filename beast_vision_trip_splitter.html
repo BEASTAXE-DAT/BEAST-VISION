@@ -1,0 +1,687 @@
+
+<style>
+  :root {
+    --bv-gold: #f0b429;
+    --bv-gold-dim: #c88e10;
+    --bv-bg: #0a0c14;
+    --bv-surface: rgba(255,255,255,0.04);
+    --bv-surface2: rgba(255,255,255,0.07);
+    --bv-border: rgba(255,255,255,0.10);
+    --bv-border2: rgba(240,180,41,0.3);
+    --bv-text: #e8eaf0;
+    --bv-muted: #8890a4;
+    --bv-danger: #e24b4a;
+    --bv-success: #1d9e75;
+    --bv-purple: #7f77dd;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bv-bg); color: var(--bv-text); font-family: var(--font-sans,'Inter',sans-serif); }
+  .page { min-height: 100vh; background: linear-gradient(135deg, #0a0c14 0%, #0d1020 50%, #0a0e1a 100%); }
+
+  /* NAV */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; border-bottom: 0.5px solid var(--bv-border); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; background: rgba(10,12,20,0.85); }
+  .nav-logo { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 500; color: var(--bv-gold); letter-spacing: 0.04em; }
+  .nav-logo-icon { width: 28px; height: 28px; background: linear-gradient(135deg, var(--bv-gold), #e07b10); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+  .nav-links a { font-size: 13px; color: var(--bv-muted); text-decoration: none; cursor: pointer; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--bv-text); }
+  .nav-cta { background: var(--bv-gold); color: #0a0c14; border: none; border-radius: 6px; padding: 6px 16px; font-size: 13px; font-weight: 500; cursor: pointer; transition: opacity 0.2s; }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero { text-align: center; padding: 5rem 2rem 4rem; position: relative; overflow: hidden; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(240,180,41,0.12); border: 0.5px solid rgba(240,180,41,0.3); border-radius: 99px; padding: 4px 14px; font-size: 12px; color: var(--bv-gold); margin-bottom: 1.5rem; }
+  .hero h1 { font-size: clamp(36px, 7vw, 64px); font-weight: 500; background: linear-gradient(135deg, #ffffff 0%, #c0c8e0 60%, var(--bv-gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.02em; line-height: 1.1; }
+  .hero-sub { font-size: 16px; color: var(--bv-muted); margin: 1rem auto 2rem; max-width: 480px; line-height: 1.6; }
+  .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: var(--bv-gold); color: #0a0c14; border: none; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: var(--bv-text); border: 0.5px solid var(--bv-border2); border-radius: 8px; padding: 10px 24px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
+  .btn-outline:hover { background: var(--bv-surface2); }
+  .hero-stats { display: flex; justify-content: center; gap: 3rem; margin-top: 3rem; padding-top: 2rem; border-top: 0.5px solid var(--bv-border); }
+  .stat { text-align: center; }
+  .stat-val { font-size: 22px; font-weight: 500; color: var(--bv-gold); }
+  .stat-label { font-size: 12px; color: var(--bv-muted); margin-top: 2px; }
+  .hero-orb { position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 500px; height: 500px; background: radial-gradient(circle, rgba(240,180,41,0.06) 0%, transparent 70%); pointer-events: none; }
+
+  /* SECTION */
+  .section { padding: 3rem 2rem; max-width: 900px; margin: 0 auto; }
+  .section-title { font-size: 20px; font-weight: 500; color: var(--bv-text); margin-bottom: 4px; }
+  .section-sub { font-size: 13px; color: var(--bv-muted); margin-bottom: 1.5rem; }
+
+  /* GLASS CARD */
+  .glass { background: var(--bv-surface); border: 0.5px solid var(--bv-border); border-radius: 14px; backdrop-filter: blur(12px); }
+  .glass2 { background: var(--bv-surface2); border: 0.5px solid var(--bv-border2); border-radius: 14px; backdrop-filter: blur(12px); }
+
+  /* TABS */
+  .tabs { display: flex; gap: 4px; background: var(--bv-surface); border: 0.5px solid var(--bv-border); border-radius: 10px; padding: 4px; margin-bottom: 1.5rem; }
+  .tab { flex: 1; padding: 8px 12px; border: none; background: transparent; color: var(--bv-muted); border-radius: 7px; cursor: pointer; font-size: 13px; transition: all 0.2s; text-align: center; }
+  .tab.active { background: var(--bv-gold); color: #0a0c14; font-weight: 500; }
+
+  /* TRIP SETUP */
+  .form-row { display: grid; gap: 12px; margin-bottom: 12px; }
+  .form-row.cols2 { grid-template-columns: 1fr 1fr; }
+  .form-row.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+  label.fl { font-size: 12px; color: var(--bv-muted); display: block; margin-bottom: 4px; }
+  input.bv, select.bv, textarea.bv {
+    width: 100%; background: rgba(255,255,255,0.05); border: 0.5px solid var(--bv-border); border-radius: 8px;
+    color: var(--bv-text); font-size: 13px; padding: 8px 12px; outline: none; transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  input.bv:focus, select.bv:focus, textarea.bv:focus { border-color: var(--bv-gold); }
+  select.bv option { background: #0d1020; }
+  textarea.bv { resize: vertical; min-height: 64px; }
+
+  /* MEMBER CHIPS */
+  .member-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; min-height: 36px; }
+  .member-chip { display: flex; align-items: center; gap: 6px; background: rgba(240,180,41,0.1); border: 0.5px solid rgba(240,180,41,0.25); border-radius: 99px; padding: 4px 10px 4px 6px; font-size: 12px; color: var(--bv-text); }
+  .chip-avatar { width: 20px; height: 20px; border-radius: 50%; background: var(--bv-gold); color: #0a0c14; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 500; flex-shrink: 0; }
+  .chip-remove { background: none; border: none; color: var(--bv-muted); cursor: pointer; font-size: 14px; line-height: 1; padding: 0 2px; }
+  .chip-remove:hover { color: var(--bv-danger); }
+
+  /* EXPENSE LIST */
+  .expense-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 0.5px solid var(--bv-border); }
+  .expense-item:last-child { border-bottom: none; }
+  .cat-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .expense-info { flex: 1; min-width: 0; }
+  .expense-name { font-size: 13px; font-weight: 500; }
+  .expense-meta { font-size: 11px; color: var(--bv-muted); }
+  .expense-amt { font-size: 14px; font-weight: 500; color: var(--bv-gold); white-space: nowrap; }
+  .expense-del { background: none; border: none; color: var(--bv-muted); cursor: pointer; font-size: 16px; padding: 2px 6px; }
+  .expense-del:hover { color: var(--bv-danger); }
+
+  /* SUMMARY CARDS */
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .summary-card { background: var(--bv-surface2); border: 0.5px solid var(--bv-border); border-radius: 10px; padding: 12px 14px; }
+  .summary-label { font-size: 11px; color: var(--bv-muted); margin-bottom: 4px; }
+  .summary-val { font-size: 20px; font-weight: 500; }
+
+  /* SETTLEMENT */
+  .settle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 0.5px solid var(--bv-border); font-size: 13px; }
+  .settle-row:last-child { border-bottom: none; }
+  .settle-name { display: flex; align-items: center; gap: 8px; }
+  .member-dot { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 500; flex-shrink: 0; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+  .badge-owes { background: rgba(226,75,74,0.15); color: #e24b4a; }
+  .badge-paid { background: rgba(29,158,117,0.15); color: #1d9e75; }
+  .badge-even { background: rgba(136,144,164,0.15); color: var(--bv-muted); }
+  .arrow { font-size: 11px; color: var(--bv-muted); }
+
+  /* FEATURES GRID */
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; padding: 3rem 2rem; max-width: 900px; margin: 0 auto; }
+  .feat-card { background: var(--bv-surface); border: 0.5px solid var(--bv-border); border-radius: 12px; padding: 1.25rem; transition: border-color 0.2s; }
+  .feat-card:hover { border-color: rgba(240,180,41,0.3); }
+  .feat-icon { width: 36px; height: 36px; background: rgba(240,180,41,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-bottom: 10px; }
+  .feat-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .feat-desc { font-size: 11px; color: var(--bv-muted); line-height: 1.5; }
+
+  /* FEEDBACK */
+  .feedback-section { padding: 3rem 2rem; max-width: 640px; margin: 0 auto; }
+  .stars { display: flex; gap: 6px; margin-bottom: 12px; }
+  .star { font-size: 24px; cursor: pointer; color: var(--bv-border); transition: color 0.15s; line-height: 1; }
+  .star.lit { color: var(--bv-gold); }
+  .success-msg { background: rgba(29,158,117,0.12); border: 0.5px solid rgba(29,158,117,0.3); border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #1d9e75; text-align: center; margin-top: 12px; display: none; }
+
+  /* FOOTER */
+  footer { border-top: 0.5px solid var(--bv-border); padding: 2.5rem 2rem; max-width: 900px; margin: 0 auto; }
+  .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+  .footer-brand p { font-size: 12px; color: var(--bv-muted); margin-top: 8px; line-height: 1.6; max-width: 240px; }
+  .footer-col h4 { font-size: 12px; font-weight: 500; color: var(--bv-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .footer-col a { display: block; font-size: 13px; color: var(--bv-muted); text-decoration: none; margin-bottom: 6px; cursor: pointer; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--bv-text); }
+  .social-row { display: flex; gap: 10px; margin-top: 12px; }
+  .social-btn { width: 32px; height: 32px; border-radius: 8px; background: var(--bv-surface2); border: 0.5px solid var(--bv-border); display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; transition: border-color 0.2s; color: var(--bv-muted); text-decoration: none; }
+  .social-btn:hover { border-color: var(--bv-gold); color: var(--bv-gold); }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 1.5rem; border-top: 0.5px solid var(--bv-border); font-size: 12px; color: var(--bv-muted); }
+
+  /* CHARTS */
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* CURRENCY TAG */
+  .currency-tag { display: inline-flex; align-items: center; gap: 4px; background: rgba(127,119,221,0.12); border: 0.5px solid rgba(127,119,221,0.3); border-radius: 99px; padding: 2px 10px; font-size: 11px; color: var(--bv-purple); cursor: pointer; }
+
+  @media (max-width: 600px) {
+    .footer-top { grid-template-columns: 1fr; gap: 1.5rem; }
+    .form-row.cols2, .form-row.cols3 { grid-template-columns: 1fr; }
+    .chart-grid { grid-template-columns: 1fr; }
+    nav { padding: 0.75rem 1rem; }
+    .section { padding: 2rem 1rem; }
+  }
+  .divider { height: 0.5px; background: var(--bv-border); margin: 0 2rem; }
+</style>
+
+<div class="page">
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      <div class="nav-logo-icon">BV</div>
+      Beast Vision
+    </div>
+    <div class="nav-links">
+      <a onclick="showTab('setup')">Trip</a>
+      <a onclick="showTab('expenses')">Expenses</a>
+      <a onclick="showTab('split')">Split</a>
+      <a onclick="showTab('analytics')">Analytics</a>
+      <div class="currency-tag" onclick="cycleCurrency()">
+        <span id="currencySymbol">$</span>
+        <span id="currencyCode">USD</span>
+      </div>
+    </div>
+    <button class="nav-cta" onclick="showTab('setup')">Start Trip</button>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero" id="homeSection">
+    <div class="hero-orb"></div>
+    <div class="hero-badge">✦ Smart Travel Finance</div>
+    <h1>Beast Vision</h1>
+    <p class="hero-sub">Smart Expense Sharing for Every Trip — no more awkward money talks with friends.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="showTab('setup')">Start Trip</button>
+      <button class="btn-outline" onclick="scrollToFeatures()">See Features</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-val">100%</div><div class="stat-label">Fair splits</div></div>
+      <div class="stat"><div class="stat-val">0</div><div class="stat-label">Confusion</div></div>
+      <div class="stat"><div class="stat-val">∞</div><div class="stat-label">Members</div></div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div id="featuresSection">
+    <div style="text-align:center; padding: 1.5rem 2rem 0.5rem; max-width:900px; margin:0 auto;">
+      <p style="font-size:11px; color:var(--bv-gold); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px;">Everything you need</p>
+      <p class="section-title" style="font-size:22px;">Built for real trips</p>
+    </div>
+    <div class="features">
+      <div class="feat-card"><div class="feat-icon">👥</div><div class="feat-title">Unlimited Members</div><div class="feat-desc">Add as many friends as you need — no caps.</div></div>
+      <div class="feat-card"><div class="feat-icon">📊</div><div class="feat-title">Smart Analytics</div><div class="feat-desc">Visual pie & bar charts for spending breakdown.</div></div>
+      <div class="feat-card"><div class="feat-icon">⚡</div><div class="feat-title">Instant Split</div><div class="feat-desc">Auto-calculates who owes who in real-time.</div></div>
+      <div class="feat-card"><div class="feat-icon">💱</div><div class="feat-title">Multi-Currency</div><div class="feat-desc">Switch between USD, EUR, NPR, GBP, and more.</div></div>
+      <div class="feat-card"><div class="feat-icon">📁</div><div class="feat-title">Save History</div><div class="feat-desc">Past trips saved locally — revisit anytime.</div></div>
+      <div class="feat-card"><div class="feat-icon">📄</div><div class="feat-title">Export Report</div><div class="feat-desc">Download a full trip summary PDF.</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- MAIN APP -->
+  <div class="section">
+    <div class="tabs">
+      <button class="tab active" id="tab-setup" onclick="showTab('setup')">Setup Trip</button>
+      <button class="tab" id="tab-expenses" onclick="showTab('expenses')">Expenses</button>
+      <button class="tab" id="tab-split" onclick="showTab('split')">Split</button>
+      <button class="tab" id="tab-analytics" onclick="showTab('analytics')">Analytics</button>
+    </div>
+
+    <!-- SETUP TAB -->
+    <div id="panel-setup">
+      <div class="glass" style="padding:1.5rem;">
+        <p class="section-title" style="margin-bottom:4px;">Create your trip</p>
+        <p class="section-sub" style="margin-bottom:1.25rem;">Set up the trip name and invite your friends.</p>
+
+        <div class="form-row cols2">
+          <div><label class="fl">Trip Name</label><input class="bv" id="tripName" placeholder="e.g. Pokhara Weekend 2026" /></div>
+          <div><label class="fl">Trip Date</label><input class="bv" type="date" id="tripDate" /></div>
+        </div>
+
+        <label class="fl">Add Members</label>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <input class="bv" id="memberInput" placeholder="Enter member name" style="flex:1" onkeydown="if(event.key==='Enter')addMember()" />
+          <button class="btn-primary" onclick="addMember()" style="white-space:nowrap;padding:8px 16px;font-size:13px;">Add</button>
+        </div>
+
+        <div class="member-list" id="memberList"></div>
+
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button class="btn-primary" onclick="showTab('expenses')" style="flex:1;">Continue to Expenses</button>
+          <button class="btn-outline" onclick="loadSampleData()" style="font-size:13px;padding:8px 16px;">Load Demo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPENSES TAB -->
+    <div id="panel-expenses" style="display:none;">
+      <div class="glass" style="padding:1.5rem; margin-bottom:14px;">
+        <p class="section-title" style="margin-bottom:1rem;">Add expense</p>
+        <div class="form-row cols3">
+          <div>
+            <label class="fl">Category</label>
+            <select class="bv" id="expCat">
+              <option value="Food">🍔 Food</option>
+              <option value="Water/Drinks">💧 Water / Drinks</option>
+              <option value="Transport">🚗 Transport</option>
+              <option value="Hotel">🏨 Hotel / Stay</option>
+              <option value="Tickets">🎟 Tickets</option>
+              <option value="Shopping">🛍 Shopping</option>
+              <option value="Emergency">🚨 Emergency</option>
+              <option value="Other">✦ Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="fl">Amount (<span class="currSym">$</span>)</label>
+            <input class="bv" type="number" id="expAmt" placeholder="0.00" min="0" />
+          </div>
+          <div>
+            <label class="fl">Paid By</label>
+            <select class="bv" id="expPayer" id="expPayer"></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label class="fl">Notes (optional)</label>
+            <input class="bv" id="expNote" placeholder="e.g. Dinner at lakeside restaurant" />
+          </div>
+        </div>
+        <button class="btn-primary" onclick="addExpense()" style="width:100%;margin-top:4px;">Add Expense</button>
+      </div>
+
+      <div class="glass" id="expenseListPanel">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:0.5px solid var(--bv-border);">
+          <span style="font-size:13px;font-weight:500;">Expenses (<span id="expCount">0</span>)</span>
+          <span style="font-size:13px;color:var(--bv-gold);font-weight:500;">Total: <span class="currSym">$</span><span id="expTotal">0.00</span></span>
+        </div>
+        <div id="expenseList"><div style="padding:2rem;text-align:center;color:var(--bv-muted);font-size:13px;">No expenses yet. Add your first one above.</div></div>
+      </div>
+    </div>
+
+    <!-- SPLIT TAB -->
+    <div id="panel-split" style="display:none;">
+      <div class="summary-grid" id="splitSummary"></div>
+      <div class="glass" style="padding:1.25rem;">
+        <p style="font-size:13px;font-weight:500;margin-bottom:1rem;color:var(--bv-muted);">Settlement plan</p>
+        <div id="settlementList"></div>
+      </div>
+      <div class="glass2" style="padding:1.25rem;margin-top:14px;">
+        <p style="font-size:12px;font-weight:500;margin-bottom:10px;color:var(--bv-gold);">Transfer instructions</p>
+        <div id="transferList" style="font-size:13px;color:var(--bv-text);line-height:2;"></div>
+      </div>
+      <button class="btn-primary" onclick="exportReport()" style="width:100%;margin-top:14px;">Export PDF Report</button>
+    </div>
+
+    <!-- ANALYTICS TAB -->
+    <div id="panel-analytics" style="display:none;">
+      <div class="chart-grid">
+        <div class="glass" style="padding:1.25rem;">
+          <p style="font-size:12px;color:var(--bv-muted);margin-bottom:12px;">Spending by category</p>
+          <div style="position:relative;height:220px;">
+            <canvas id="pieChart" role="img" aria-label="Pie chart of trip spending by category">Category spending breakdown</canvas>
+          </div>
+          <div id="pieLegend" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;font-size:11px;color:var(--bv-muted);"></div>
+        </div>
+        <div class="glass" style="padding:1.25rem;">
+          <p style="font-size:12px;color:var(--bv-muted);margin-bottom:12px;">Paid by member</p>
+          <div style="position:relative;height:220px;">
+            <canvas id="barChart" role="img" aria-label="Bar chart of amount paid per member">Member payment amounts</canvas>
+          </div>
+        </div>
+      </div>
+      <div class="glass" style="padding:1.25rem;margin-top:14px;">
+        <p style="font-size:12px;color:var(--bv-muted);margin-bottom:12px;">Daily spending timeline</p>
+        <div style="position:relative;height:180px;">
+          <canvas id="lineChart" role="img" aria-label="Line chart of daily spending">Daily expense timeline</canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY SECTION -->
+  <div class="section" style="padding-top:0;">
+    <div class="glass" style="padding:1.25rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <p style="font-size:13px;font-weight:500;">Saved Trips</p>
+        <button class="btn-primary" onclick="saveTrip()" style="font-size:12px;padding:6px 14px;">Save Current</button>
+      </div>
+      <div id="tripHistory"><p style="font-size:13px;color:var(--bv-muted);">No saved trips yet.</p></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FEEDBACK -->
+  <div class="feedback-section">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <p style="font-size:11px;color:var(--bv-gold);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Community</p>
+      <p style="font-size:20px;font-weight:500;">We Value Your Feedback</p>
+      <p style="font-size:13px;color:var(--bv-muted);margin-top:6px;">Help us make Beast Vision even better</p>
+    </div>
+    <div class="glass" style="padding:1.5rem;">
+      <div class="form-row cols2">
+        <div><label class="fl">Your Name</label><input class="bv" id="fbName" placeholder="John Doe" /></div>
+        <div><label class="fl">Email</label><input class="bv" id="fbEmail" placeholder="you@email.com" type="email" /></div>
+      </div>
+      <label class="fl" style="margin-bottom:4px;">Your Rating</label>
+      <div class="stars" id="stars">
+        <span class="star" onclick="setRating(1)">★</span>
+        <span class="star" onclick="setRating(2)">★</span>
+        <span class="star" onclick="setRating(3)">★</span>
+        <span class="star" onclick="setRating(4)">★</span>
+        <span class="star" onclick="setRating(5)">★</span>
+      </div>
+      <label class="fl" style="margin-bottom:4px;">Message</label>
+      <textarea class="bv" id="fbMsg" placeholder="Tell us what you think..." style="min-height:80px;margin-bottom:12px;"></textarea>
+      <button class="btn-primary" onclick="submitFeedback()" style="width:100%;">Submit Feedback</button>
+      <div class="success-msg" id="fbSuccess">✓ Thank you! Your feedback has been received. We appreciate it!</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FOOTER -->
+  <div style="max-width:900px;margin:0 auto;padding:2rem 2rem 0;">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="nav-logo" style="margin-bottom:8px;">
+          <div class="nav-logo-icon">BV</div>
+          Beast Vision
+        </div>
+        <p>The smartest way to split group travel expenses. Fair, transparent, and stress-free.</p>
+        <div class="social-row">
+          <a class="social-btn" title="Twitter/X">𝕏</a>
+          <a class="social-btn" title="Instagram">ig</a>
+          <a class="social-btn" title="GitHub">gh</a>
+          <a class="social-btn" title="LinkedIn">in</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a onclick="document.getElementById('homeSection').scrollIntoView({behavior:'smooth'})">Home</a>
+        <a onclick="showTab('setup')">Start Trip</a>
+        <a onclick="showTab('analytics')">Analytics</a>
+        <a onclick="scrollToFeatures()">Features</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="mailto:avashkharel2@gmail.com">avashkharel2@gmail.com</a>
+        <a>Privacy Policy</a>
+        <a>Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Beast Vision. All Rights Reserved.</span>
+      <span>Made with ♦ for travelers</span>
+    </div>
+  </div>
+  <div style="height:2rem;"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const currencies = [
+  {sym:'$',code:'USD'},{sym:'€',code:'EUR'},{sym:'£',code:'GBP'},
+  {sym:'₹',code:'INR'},{sym:'रू',code:'NPR'},{sym:'¥',code:'JPY'}
+];
+let currIdx = 0;
+let members = [];
+let expenses = [];
+let rating = 0;
+let pieChartInst = null, barChartInst = null, lineChartInst = null;
+const catColors = {'Food':'#f0b429','Water/Drinks':'#5DCAA5','Transport':'#7f77dd','Hotel':'#378ADD','Tickets':'#D4537E','Shopping':'#97C459','Emergency':'#E24B4A','Other':'#888780'};
+const catIcons = {'Food':'🍔','Water/Drinks':'💧','Transport':'🚗','Hotel':'🏨','Tickets':'🎟','Shopping':'🛍','Emergency':'🚨','Other':'✦'};
+const memberColors = ['#f0b429','#7f77dd','#5DCAA5','#D4537E','#378ADD','#97C459','#E24B4A','#888780','#ef9f27'];
+
+function sym() { return currencies[currIdx].sym; }
+
+function cycleCurrency() {
+  currIdx = (currIdx + 1) % currencies.length;
+  document.getElementById('currencySymbol').textContent = currencies[currIdx].sym;
+  document.getElementById('currencyCode').textContent = currencies[currIdx].code;
+  document.querySelectorAll('.currSym').forEach(el => el.textContent = currencies[currIdx].sym);
+  renderExpenseList(); updateSplit();
+}
+
+function showTab(t) {
+  ['setup','expenses','split','analytics'].forEach(id => {
+    document.getElementById('panel-'+id).style.display = id===t?'':'none';
+    document.getElementById('tab-'+id).classList.toggle('active', id===t);
+  });
+  if(t==='split') updateSplit();
+  if(t==='analytics') renderCharts();
+  window.scrollTo({top: document.querySelector('.tabs').getBoundingClientRect().top + window.scrollY - 80, behavior:'smooth'});
+}
+
+function scrollToFeatures() {
+  document.getElementById('featuresSection').scrollIntoView({behavior:'smooth'});
+}
+
+function addMember() {
+  const inp = document.getElementById('memberInput');
+  const name = inp.value.trim();
+  if(!name) return;
+  if(members.includes(name)) { inp.value=''; return; }
+  members.push(name);
+  inp.value = '';
+  renderMembers();
+  updatePayerSelect();
+}
+
+function removeMember(name) {
+  members = members.filter(m => m !== name);
+  renderMembers();
+  updatePayerSelect();
+}
+
+function renderMembers() {
+  const list = document.getElementById('memberList');
+  if(!members.length) { list.innerHTML='<span style="font-size:12px;color:var(--bv-muted)">No members yet.</span>'; return; }
+  list.innerHTML = members.map((m,i)=>`
+    <div class="member-chip">
+      <div class="chip-avatar" style="background:${memberColors[i%memberColors.length]}">${m[0].toUpperCase()}</div>
+      ${m}
+      <button class="chip-remove" onclick="removeMember('${m}')">×</button>
+    </div>`).join('');
+}
+
+function updatePayerSelect() {
+  const sel = document.getElementById('expPayer');
+  sel.innerHTML = members.map(m=>`<option value="${m}">${m}</option>`).join('');
+}
+
+function addExpense() {
+  if(!members.length) { alert('Add members first!'); showTab('setup'); return; }
+  const amt = parseFloat(document.getElementById('expAmt').value);
+  if(!amt || amt <= 0) { alert('Enter a valid amount.'); return; }
+  const cat = document.getElementById('expCat').value;
+  const payer = document.getElementById('expPayer').value;
+  const note = document.getElementById('expNote').value;
+  const now = new Date();
+  expenses.push({ id: Date.now(), cat, amt, payer, note, date: now.toLocaleDateString(), time: now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) });
+  document.getElementById('expAmt').value = '';
+  document.getElementById('expNote').value = '';
+  renderExpenseList();
+}
+
+function removeExpense(id) {
+  expenses = expenses.filter(e => e.id !== id);
+  renderExpenseList();
+}
+
+function renderExpenseList() {
+  const list = document.getElementById('expenseList');
+  const total = expenses.reduce((s,e)=>s+e.amt,0);
+  document.getElementById('expCount').textContent = expenses.length;
+  document.getElementById('expTotal').textContent = total.toFixed(2);
+  if(!expenses.length) { list.innerHTML='<div style="padding:2rem;text-align:center;color:var(--bv-muted);font-size:13px;">No expenses yet.</div>'; return; }
+  list.innerHTML = expenses.map(e=>`
+    <div class="expense-item">
+      <div class="cat-icon" style="background:${catColors[e.cat]}22">${catIcons[e.cat]||'✦'}</div>
+      <div class="expense-info">
+        <div class="expense-name">${e.cat}${e.note?' – '+e.note:''}</div>
+        <div class="expense-meta">Paid by ${e.payer} · ${e.date} ${e.time}</div>
+      </div>
+      <div class="expense-amt">${sym()}${e.amt.toFixed(2)}</div>
+      <button class="expense-del" onclick="removeExpense(${e.id})">×</button>
+    </div>`).join('');
+}
+
+function updateSplit() {
+  const total = expenses.reduce((s,e)=>s+e.amt,0);
+  const n = members.length;
+  const perHead = n > 0 ? total / n : 0;
+  const paid = {};
+  members.forEach(m => paid[m] = 0);
+  expenses.forEach(e => { if(paid[e.payer] !== undefined) paid[e.payer] += e.amt; });
+  const balance = {};
+  members.forEach(m => balance[m] = +(paid[m] - perHead).toFixed(2));
+
+  const sumGrid = document.getElementById('splitSummary');
+  sumGrid.innerHTML = `
+    <div class="summary-card"><div class="summary-label">Total Spent</div><div class="summary-val" style="color:var(--bv-gold)">${sym()}${total.toFixed(2)}</div></div>
+    <div class="summary-card"><div class="summary-label">Members</div><div class="summary-val">${n}</div></div>
+    <div class="summary-card"><div class="summary-label">Per Person</div><div class="summary-val" style="color:var(--bv-purple)">${sym()}${perHead.toFixed(2)}</div></div>
+    <div class="summary-card"><div class="summary-label">Expenses</div><div class="summary-val">${expenses.length}</div></div>`;
+
+  const settleList = document.getElementById('settlementList');
+  if(!members.length) { settleList.innerHTML='<p style="font-size:13px;color:var(--bv-muted);">Add members and expenses to see the split.</p>'; return; }
+  settleList.innerHTML = members.map((m,i)=>{
+    const b = balance[m];
+    const cls = b > 0.01 ? 'badge-paid' : b < -0.01 ? 'badge-owes' : 'badge-even';
+    const label = b > 0.01 ? `+${sym()}${b.toFixed(2)} credit` : b < -0.01 ? `owes ${sym()}${Math.abs(b).toFixed(2)}` : 'settled';
+    return `<div class="settle-row">
+      <div class="settle-name">
+        <div class="member-dot" style="background:${memberColors[i%memberColors.length]}22;color:${memberColors[i%memberColors.length]}">${m[0].toUpperCase()}</div>
+        <span style="font-size:13px;">${m}</span>
+        <span style="font-size:11px;color:var(--bv-muted)">paid ${sym()}${(paid[m]||0).toFixed(2)}</span>
+      </div>
+      <span class="badge ${cls}">${label}</span>
+    </div>`;}).join('');
+
+  const transfers = [];
+  const bal = {...balance};
+  const creditors = members.filter(m=>bal[m]>0.01).sort((a,b)=>bal[b]-bal[a]);
+  const debtors = members.filter(m=>bal[m]<-0.01).sort((a,b)=>bal[a]-bal[b]);
+  let ci=0, di=0;
+  while(ci<creditors.length && di<debtors.length) {
+    const c=creditors[ci], d=debtors[di];
+    const amt = Math.min(bal[c], -bal[d]);
+    transfers.push(`${d} → ${c}: ${sym()}${amt.toFixed(2)}`);
+    bal[c]-=amt; bal[d]+=amt;
+    if(Math.abs(bal[c])<0.01) ci++;
+    if(Math.abs(bal[d])<0.01) di++;
+  }
+  document.getElementById('transferList').innerHTML = transfers.length
+    ? transfers.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:0.5px solid var(--bv-border);"><span style="color:var(--bv-danger)">↗</span>${t}</div>`).join('')
+    : '<div style="color:var(--bv-muted)">All settled! No transfers needed.</div>';
+}
+
+function renderCharts() {
+  const catTotals = {};
+  const memberTotals = {};
+  const dateTotals = {};
+  expenses.forEach(e => {
+    catTotals[e.cat] = (catTotals[e.cat]||0) + e.amt;
+    memberTotals[e.payer] = (memberTotals[e.payer]||0) + e.amt;
+    dateTotals[e.date] = (dateTotals[e.date]||0) + e.amt;
+  });
+
+  if(pieChartInst) pieChartInst.destroy();
+  if(barChartInst) barChartInst.destroy();
+  if(lineChartInst) lineChartInst.destroy();
+
+  const catKeys = Object.keys(catTotals);
+  const catVals = catKeys.map(k=>catTotals[k]);
+  const catColArr = catKeys.map(k=>catColors[k]||'#888');
+
+  const pieLegend = document.getElementById('pieLegend');
+  pieLegend.innerHTML = catKeys.map((k,i)=>`<span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:${catColArr[i]};display:inline-block;"></span>${k} ${sym()}${catTotals[k].toFixed(0)}</span>`).join('');
+
+  pieChartInst = new Chart(document.getElementById('pieChart'), {
+    type: 'doughnut',
+    data: { labels: catKeys, datasets: [{ data: catVals, backgroundColor: catColArr, borderWidth: 1.5, borderColor:'#0a0c14' }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${sym()}${ctx.parsed.toFixed(2)}` } } }, cutout: '60%' }
+  });
+
+  const mKeys = Object.keys(memberTotals);
+  const mVals = mKeys.map(k=>memberTotals[k]);
+  const mColors = mKeys.map((_,i)=>memberColors[i%memberColors.length]);
+
+  barChartInst = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: { labels: mKeys, datasets: [{ data: mVals, backgroundColor: mColors, borderRadius: 6, borderWidth: 0 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${sym()}${ctx.parsed.y.toFixed(2)}` } } }, scales: { x: { ticks: { color: '#8890a4', font: { size: 11 } }, grid: { display: false } }, y: { ticks: { color: '#8890a4', font: { size: 11 }, callback: v => sym()+v }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+  });
+
+  const dateKeys = Object.keys(dateTotals).sort();
+  const dateVals = dateKeys.map(k=>dateTotals[k]);
+  lineChartInst = new Chart(document.getElementById('lineChart'), {
+    type: 'line',
+    data: { labels: dateKeys, datasets: [{ data: dateVals, borderColor: '#f0b429', backgroundColor: 'rgba(240,180,41,0.08)', fill: true, tension: 0.4, pointBackgroundColor: '#f0b429', pointRadius: 4 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${sym()}${ctx.parsed.y.toFixed(2)}` } } }, scales: { x: { ticks: { color: '#8890a4', font: { size: 11 } }, grid: { display: false } }, y: { ticks: { color: '#8890a4', font: { size: 11 }, callback: v => sym()+v }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+  });
+}
+
+function setRating(r) {
+  rating = r;
+  document.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('lit', i<r));
+}
+
+function submitFeedback() {
+  const name = document.getElementById('fbName').value.trim();
+  const email = document.getElementById('fbEmail').value.trim();
+  const msg = document.getElementById('fbMsg').value.trim();
+  if(!name || !msg) { alert('Please fill in your name and message.'); return; }
+  document.getElementById('fbSuccess').style.display = 'block';
+  document.getElementById('fbName').value = '';
+  document.getElementById('fbEmail').value = '';
+  document.getElementById('fbMsg').value = '';
+  setRating(0);
+  setTimeout(()=>document.getElementById('fbSuccess').style.display='none', 4000);
+}
+
+function saveTrip() {
+  const name = document.getElementById('tripName').value || 'Untitled Trip';
+  const total = expenses.reduce((s,e)=>s+e.amt,0);
+  const saves = JSON.parse(localStorage.getItem('bv_trips')||'[]');
+  saves.unshift({ name, total: total.toFixed(2), members: members.length, date: new Date().toLocaleDateString(), expenses: expenses.length, sym: currencies[currIdx].sym });
+  if(saves.length > 10) saves.pop();
+  localStorage.setItem('bv_trips', JSON.stringify(saves));
+  renderHistory();
+}
+
+function renderHistory() {
+  const saves = JSON.parse(localStorage.getItem('bv_trips')||'[]');
+  const el = document.getElementById('tripHistory');
+  if(!saves.length) { el.innerHTML='<p style="font-size:13px;color:var(--bv-muted);">No saved trips yet.</p>'; return; }
+  el.innerHTML = saves.map(t=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:0.5px solid var(--bv-border);">
+      <div>
+        <div style="font-size:13px;font-weight:500;">${t.name}</div>
+        <div style="font-size:11px;color:var(--bv-muted);">${t.members} members · ${t.expenses} expenses · ${t.date}</div>
+      </div>
+      <span style="font-size:14px;color:var(--bv-gold);">${t.sym}${t.total}</span>
+    </div>`).join('');
+}
+
+function exportReport() {
+  const name = document.getElementById('tripName').value || 'Beast Vision Trip';
+  const total = expenses.reduce((s,e)=>s+e.amt,0);
+  const perHead = members.length ? total / members.length : 0;
+  let txt = `BEAST VISION — TRIP REPORT\n${'='.repeat(40)}\nTrip: ${name}\nDate: ${new Date().toLocaleDateString()}\nMembers: ${members.join(', ')}\nTotal: ${sym()}${total.toFixed(2)}\nPer Person: ${sym()}${perHead.toFixed(2)}\n\nEXPENSES:\n`;
+  expenses.forEach(e => { txt += `${e.date} | ${e.cat} | ${sym()}${e.amt.toFixed(2)} | Paid: ${e.payer}${e.note?' | '+e.note:''}\n`; });
+  const blob = new Blob([txt], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${name.replace(/\s+/g,'-')}-report.txt`;
+  a.click();
+}
+
+function loadSampleData() {
+  members = ['Avash','Sita','Ram','Priya'];
+  renderMembers(); updatePayerSelect();
+  document.getElementById('tripName').value = 'Pokhara Weekend 2026';
+  expenses = [
+    {id:1,cat:'Hotel',amt:120,payer:'Avash',note:'3 nights lakeside inn',date:'4/25/2026',time:'10:00 AM'},
+    {id:2,cat:'Food',amt:45,payer:'Sita',note:'Dinner at Fishtail',date:'4/25/2026',time:'7:30 PM'},
+    {id:3,cat:'Transport',amt:60,payer:'Ram',note:'Bus tickets Kathmandu–Pokhara',date:'4/25/2026',time:'6:00 AM'},
+    {id:4,cat:'Tickets',amt:30,payer:'Priya',note:'Paragliding entry',date:'4/26/2026',time:'9:00 AM'},
+    {id:5,cat:'Water/Drinks',amt:15,payer:'Avash',note:'Drinks by the lake',date:'4/26/2026',time:'3:00 PM'},
+    {id:6,cat:'Food',amt:35,payer:'Sita',note:'Breakfast buffet',date:'4/27/2026',time:'8:30 AM'},
+    {id:7,cat:'Shopping',amt:55,payer:'Ram',note:'Souvenirs & gifts',date:'4/27/2026',time:'2:00 PM'},
+  ];
+  renderExpenseList();
+  showTab('expenses');
+}
+
+renderHistory();
+document.getElementById('tripDate').valueAsDate = new Date();
+</script>
